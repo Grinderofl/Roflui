@@ -1,0 +1,28 @@
+Identifier = "Roflui"
+
+
+Name = {
+  English = "RoflUI: UI Reloaded",
+}
+
+NameShort = "Roflui"
+
+Description = {
+  English = "UI inspired by TukUI",
+}
+Author = "Grinderofl"
+Website = "http://www.none.com"
+
+Version = "0.1a"
+
+Email = "madedog@gmail.com"
+
+Environment = "1.9"
+
+RunOnStartup = {
+	"config/core.lua",
+	"dev/debug.lua",
+	"modules/text.lua",	
+	"modules/unitframes/core.lua",
+	"Roflui.lua",
+}
