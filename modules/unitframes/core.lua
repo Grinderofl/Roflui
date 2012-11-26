@@ -29,15 +29,30 @@ function UF:UpdateHealth()
 	if unit ~= nil then
 		p = unit.health / unit.healthMax
 		self.bars["healthbg"]:SetWidth(math.floor((1-p) * self.bars["health"]:GetWidth()))
-		self.texts["health"]:SetText(tostring(unit.health))
+		
+		local text = tostring(unit.health)
+		
+		if unit.health > 1000000 then
+			div = unit.health / 100000
+			
+			text = string.format("%.1fm", (unit.health / 100000))
+		elseif unit.health > 10000 then
+			text = string.format("%.1fk", (unit.health / 1000))
+		end
+
+		if unit.health ~= unit.healthMax then
+			text = text .. " - " .. string.format("%.1f%%", (p * 100))
+		end
+		
+		self.texts["health"]:SetText(text)
 	end
 end
 
 function UF:GetUnitColor()
 	unit = Inspect.Unit.Detail(self.unit)
-	r = 0
-	g = 0
-	b = 0
+	r = 1
+	g = 1
+	b = 1
 	if unit ~= nil then
 		if unit.calling ~= nil then
 			colors = Roflui.config.colors[unit.calling]
@@ -53,7 +68,6 @@ end
 function UF:UpdateName()
 	unit = Inspect.Unit.Detail(self.unit)
 	if unit ~= nil then
-		print(unit.name)
 		if self.texts["name"] ~= nil then
 			self.texts["name"]:SetText(unit.name)
 			r,g,b = self:GetUnitColor()
@@ -239,5 +253,10 @@ function Roflui.CreateFrameBase(unit)
 	base.unit = unit
 	base.bars = {}
 	base.texts = {}
+	
+	base.unitChangedEventTable = nil
+	base.unitChangedEventTable = Library.LibUnitChange.Register(base.unit)
+	table.insert(base.unitChangedEventTable, {function() base:UnitChanged() end, "Roflui", base.unit.." changed"})
+	
 	return base
 end

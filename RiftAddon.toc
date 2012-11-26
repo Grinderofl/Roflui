@@ -19,6 +19,10 @@ Email = "madedog@gmail.com"
 
 Environment = "1.9"
 
+Embed = {
+	["Libs/LibUnitChange"] = true
+}
+
 RunOnStartup = {
 	"config/core.lua",
 	"dev/debug.lua",
@@ -26,3 +30,4 @@ RunOnStartup = {
 	"modules/unitframes/core.lua",
 	"Roflui.lua",
 }
+
