@@ -6,6 +6,7 @@ function Roflui.SetupUnitframes()
 	Roflui.uf = {}
 	Roflui.PlayerFrame()
 	Roflui.TargetFrame()
+	Roflui.TargetOfTargetFrame()
 end
 
 UF = {}
@@ -33,8 +34,6 @@ function UF:UpdateHealth()
 		local text = tostring(unit.health)
 		
 		if unit.health > 1000000 then
-			div = unit.health / 100000
-			
 			text = string.format("%.1fm", (unit.health / 100000))
 		elseif unit.health > 10000 then
 			text = string.format("%.1fk", (unit.health / 1000))
@@ -99,6 +98,7 @@ function Roflui.PlayerFrame()
 
 	base.bars["health"], base.bars["healthbg"] = Roflui.CreateHealthBar(base)
 	base.bars["power"] = Roflui.CreatePowerBar(base)
+	base.bars["cast"] = Roflui.CreateCastBar(base)
 	base.texts["health"] = Roflui.CreateHealthText(base)
 	base.texts["power"], base.texts["powershadow"] = Roflui.CreatePowerText(base)
 	base.texts["name"] = Roflui.CreateNameText(base)
@@ -118,24 +118,51 @@ function Roflui.TargetFrame()
 	base.fontSize = config.player.fontSize
 	
 	base.frame = Roflui.CreateFrame(base)
-
+	
 	base.bars["health"], base.bars["healthbg"] = Roflui.CreateHealthBar(base)
 	base.bars["power"] = Roflui.CreatePowerBar(base)
+	base.bars["cast"] = Roflui.CreateCastBar(base)
 	base.texts["health"] = Roflui.CreateHealthText(base)
 	base.texts["power"], base.texts["powershadow"] = Roflui.CreatePowerText(base)
 	base.texts["name"] = Roflui.CreateNameText(base)
-	
+		
 	base.frame:SetVisible(false)
 	
 	Roflui.uf["player.target"] = base
 end
 
-function Roflui.CreateHealthBar(base)
+function Roflui.TargetOfTargetFrame()
+	dp("Creating tot")
+	base = Roflui.CreateFrameBase("player.target.target")
+	base.width = 120
+	base.height = 30
+	base.x = 0
+	base.y = 200
+	base.anchorAt = "CENTER"
+	base.anchorTo = "CENTER"
+	base.fontSize = 11
+	
+	base.frame = Roflui.CreateFrame(base)
+	base.bars["health"], base.bars["healthbg"] = Roflui.CreateHealthBar(base, true)
+	base.texts["health"] = Roflui.CreateHealthText(base)
+	base.texts["name"] = Roflui.CreateNameText(base)
+	
+	base.frame:SetVisible(false)
+	
+	Roflui.uf["player.target.target"] = base
+end
+
+function Roflui.CreateHealthBar(base, full)
 
 	local fbg = UI.CreateFrame("Frame", base.unit, base.frame)
 	fbg:SetPoint("TOPLEFT", base.frame, "TOPLEFT", 1, 1)
 	fbg:SetWidth(base.width - 2)
-	fbg:SetHeight(math.floor(base.height * .8)-3)
+	
+	if full then
+		fbg:SetHeight(base.height-2)
+	else
+		fbg:SetHeight(math.floor(base.height * .8)-3)
+	end
 	fbg:SetBackgroundColor(.4, .4, .4, 1)
 	fbg:SetLayer(8)
 	
@@ -187,6 +214,34 @@ function Roflui.CreatePowerBar(base)
 	f:SetLayer(10)
 	
 	return f
+end
+
+function Roflui.CreateCastBar(base)
+	local frame = UI.CreateFrame("Frame", base.unit, base.frame)
+	frame:SetPoint("TOPLEFT", base.frame, "BOTTOMLEFT", 0, 1)
+	frame:SetWidth(base.width)
+	frame:SetHeight(12)
+	frame:SetBackgroundColor(0, 0, 0, 1)
+	
+	local fbg = UI.CreateFrame("Frame", base.unit, frame)
+	fbg:SetPoint("TOPLEFT", frame, "TOPLEFT", 1, 1)
+	fbg:SetWidth(frame:GetWidth()-2)
+	fbg:SetHeight(frame:GetHeight()-2)
+	fbg:SetBackgroundColor(.4, .4, .4, 1)
+	
+	local fbg2 = UI.CreateFrame("Frame", base.unit, fbg)
+	fbg2:SetPoint("TOPLEFT", fbg, "TOPLEFT", 1, 1)
+	fbg2:SetWidth(fbg:GetWidth() -  2)
+	fbg2:SetHeight(fbg:GetHeight() - 2)
+	fbg2:SetBackgroundColor(0, 0, 0, 1)
+		
+	local bar = UI.CreateFrame("Frame", base.unit, fbg2)
+	bar:SetPoint("TOPLEFT", fbg2, "TOPLEFT", 1, 1)
+	bar:SetWidth(fbg2:GetWidth()-2)
+	bar:SetHeight(fbg2:GetHeight()-2)
+	bar:SetBackgroundColor(.6, .6, .6, 1)
+	
+	return frame
 end
 
 function Roflui.CreateHealthText(base)
