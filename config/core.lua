@@ -6,6 +6,7 @@ local Roflui = ...
 Roflui.config = {
 	defaultFont = "media/fonts/Homespun.ttf",
 	unitframes = true,
+	tooltip = false,
 	debug = true,
 	player = {
 		width = 250,
