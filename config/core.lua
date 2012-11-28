@@ -11,16 +11,16 @@ Roflui.config = {
 		width = 250,
 		height = 55,
 		x = -250,
-		y = 200,
+		y = 300,
 		anchorAt = "CENTER",
 		anchorTo = "CENTER",
 		fontSize = 11
-	},
+		},
 	target = {
 		width = 250,
 		height = 55,
 		x = 250,
-		y = 200,
+		y = 300,
 		anchorAt = "CENTER",
 		anchorTo = "CENTER",
 		fontSize = 11
