@@ -26,6 +26,15 @@ Roflui.config = {
 		anchorTo = "CENTER",
 		fontSize = 11
 	},
+	targettarget = {
+		width = 120,
+		height = 30,
+		x = 0,
+		y = 300,
+		anchorAt = "CENTER",
+		anchorTo = "CENTER",
+		fontSize = 10
+	},
 	colors = {
 		["warrior"] 	= 	{r = 1, 	g = 1, 		b = 1		},
 		["mage"] 	= 	{r = 0.58, 	g = 0.51, 	b = 0.79	},

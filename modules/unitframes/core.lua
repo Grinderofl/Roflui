@@ -29,6 +29,10 @@ function UF:UnitChanged()
 		self:UpdateName()
 		self:SetPowerColor()
 		self:UpdatePower()
+		self:UpdateCast()
+		if self.bars["buffs"] ~= nil then
+			self.bars["buffs"]:UnitChanged()
+		end
 	else
 		self.frame:SetVisible(false)
 	end
@@ -164,6 +168,9 @@ function UF:Update()
 	if self.casting then
 		self:AnimateCast()
 	end
+	if self.bars["buffs"] ~= nil then
+		self.bars["buffs"]:Update()
+	end
 end
 
 function UF:UpdateCast()
@@ -256,6 +263,15 @@ function UF:SetPowerColor()
 		return
 	end
 	
+	if unit.calling == "warrior" then
+		self.bars["power"]:SetBackgroundColor(.7, .7, .7, 1)
+	elseif unit.calling == "rogue" then
+		self.bars["power"]:SetBackgroundColor(1, .96, .41, 1)
+	else
+		self.bars["power"]:SetBackgroundColor(.3, .6, .7, 1)
+	end
+	
+	--[[
 	if unit.manaMax ~= nil then
 		self.bars["power"]:SetBackgroundColor(.3, .6, .7, 1)
 	elseif unit.energyMax ~= nil then
@@ -263,6 +279,7 @@ function UF:SetPowerColor()
 	elseif unit.powerMax ~= nil then
 		self.bars["power"]:SetBackgroundColor(1, 1, 1, 1)
 	end
+	--]]
 end
 
 function Roflui.PlayerFrame()
@@ -277,10 +294,18 @@ function Roflui.PlayerFrame()
 	base.fontSize = config.player.fontSize
 	
 	base.frame = Roflui.CreateFrame(base)
+	base.buffs = false
+	base.debuffs = true
+	base.mydebuffs = false
+	base.maxbuffs = 8
 
 	base.bars["health"], base.bars["healthbg"] = Roflui.CreateHealthBar(base)
 	base.bars["power"], base.bars["powerbg"] = Roflui.CreatePowerBar(base)
 	base.bars["cast"] = Roflui.CreateCastBar(base)
+	base.bars["buffs"] = Roflui.CreateBuffBar(base)
+	
+	base.bars["buffs"].frame:SetPoint("BOTTOMLEFT", base.frame, "TOPLEFT", 0, -5)
+	
 	base.texts["health"] = Roflui.CreateHealthText(base)
 	base.texts["power"] = Roflui.CreatePowerText(base)
 	base.texts["name"] = Roflui.CreateNameText(base)
@@ -302,6 +327,11 @@ function Roflui.TargetFrame()
 	base.anchorTo = config.target.anchorTo
 	base.fontSize = config.player.fontSize
 	
+	base.buffs = true
+	base.debuffs = true
+	base.mydebuffs = true
+	base.maxbuffs = 8
+	
 	base.frame = Roflui.CreateFrame(base)
 	
 	base.bars["health"], base.bars["healthbg"] = Roflui.CreateHealthBar(base)
@@ -311,6 +341,9 @@ function Roflui.TargetFrame()
 	base.texts["power"] = Roflui.CreatePowerText(base)
 	base.texts["name"] = Roflui.CreateNameText(base)
 		
+	base.bars["buffs"] = Roflui.CreateBuffBar(base)
+	base.bars["buffs"].frame:SetPoint("BOTTOMLEFT", base.frame, "TOPLEFT", 0, -5)
+	
 	base.frame:SetVisible(false)
 	
 	Roflui.uf["player.target"] = base
@@ -319,13 +352,13 @@ end
 function Roflui.TargetOfTargetFrame()
 	dp("Creating tot")
 	base = Roflui.CreateFrameBase("player.target.target")
-	base.width = 120
-	base.height = 30
-	base.x = 0
-	base.y = 200
-	base.anchorAt = "CENTER"
-	base.anchorTo = "CENTER"
-	base.fontSize = 10
+	base.width = config.targettarget.width
+	base.height = config.targettarget.height
+	base.x = config.targettarget.x
+	base.y = config.targettarget.y
+	base.anchorAt = config.targettarget.anchorAt
+	base.anchorTo = config.targettarget.anchorTo
+	base.fontSize = config.targettarget.fontSize
 	
 	base.frame = Roflui.CreateFrame(base)
 	base.bars["health"], base.bars["healthbg"] = Roflui.CreateHealthBar(base, true)
@@ -483,26 +516,6 @@ function Roflui.CreatePowerText(base)
 	text:SetText("Pow")
 	text:SetLayer(30)
 
-	--[[
-	local t = UI.CreateFrame("Text", base.unit, base.frame)
-	t:SetPoint("CENTERRIGHT", base.bars["health"], "CENTERRIGHT", 0, 1)
-	--t:SetFont("Roflui", config.defaultFont)
-	t:SetFontSize(base.fontSize)
-	t:SetFontColor(0, 0, 0, 1)
-	t:SetText("Power")
-	t:SetLayer(30)
-	
-	local tb = UI.CreateFrame("Text", base.unit, base.frame)
-	tb:SetPoint("CENTERRIGHT", base.bars["health"], "CENTERRIGHT", -1, 0)
-	--tb:SetFont("Roflui", config.defaultFont)
-	tb:SetFontSize(base.fontSize)
-	tb:SetFontColor(.6, .6, .6, 1)
-	tb:SetText("Power")
-	tb:SetLayer(31)
-	
-	return t, tb
-	--]]
-	
 	return text
 end
 

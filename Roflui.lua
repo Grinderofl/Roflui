@@ -111,6 +111,56 @@ function Roflui.UpdateCast(units)
 	end
 end
 
+function Roflui.BuffsChanged(id, buffs)
+	local fuid = -1
+	
+	for n, f in pairs(Roflui.uf) do
+		fuid = Inspect.Unit.Lookup(n)
+		if fuid then
+			if id == fuid then
+				if f.bars["buffs"] ~= nil then
+					f.bars["buffs"]:UpdateBuffs();
+				end
+			end
+		end
+	end
+end
+
+function Roflui.BuffRemoved(id, buffs)
+	local fuid = -1
+	
+	for n, f in pairs(Roflui.uf) do
+		fuid = Inspect.Unit.Lookup(n)
+		if fuid then
+			if id == fuid then
+				if f.bars["buffs"] ~= nil then
+					for b in pairs(buffs) do
+						f.bars["buffs"]:RemoveBuff(b);
+					end
+				end
+			end
+		end
+	end
+end
+
+function Roflui.BuffAdded(id, buffs)
+	local fuid = -1
+	
+	for n, f in pairs(Roflui.uf) do
+		fuid = Inspect.Unit.Lookup(n)
+		if fuid then
+			if id == fuid then
+				if f.bars["buffs"] ~= nil then
+					local details = Inspect.Buff.Detail(id, buffs)
+					for k,b in pairs(details) do
+						f.bars["buffs"]:AddBuff(k, b);
+					end
+				end
+			end
+		end
+	end
+end
+
 function Roflui.SetupEvents()
 	table.insert(Event.Addon.Load.End, { Roflui.OnLoad, "Roflui", "Addon loaded"})
 	
@@ -144,6 +194,10 @@ function Roflui.SetupEvents()
 	table.insert(Event.Unit.Detail.Aggro, { Roflui.UpdateAggro, "Roflui", "Update combo"})
 	
 	--]]
+	
+	table.insert(Event.Buff.Add, {Roflui.BuffAdded, "Roflui", "Buff added"})
+	table.insert(Event.Buff.Change, {Roflui.BuffsChanged, "Roflui", "Buffs changed"})
+	table.insert(Event.Buff.Remove, {Roflui.BuffRemoved, "Roflui", "Buff removed"})
 end
 
 

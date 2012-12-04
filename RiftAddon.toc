@@ -28,6 +28,7 @@ RunOnStartup = {
 	"dev/debug.lua",
 	"modules/text.lua",	
 	"modules/unitframes/core.lua",
+	"modules/buffs/buffs.lua",
 	"modules/tooltip/tooltip.lua",
 	"Roflui.lua",
 }
