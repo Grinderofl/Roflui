@@ -79,6 +79,8 @@ function Buff:AddBuff(id, detail)
 	
 	if buff:SetBuff(detail, self) then
 		self.activeBuffs[id] = buff
+	else
+		table.insert(self.zombieBuffs, buff)
 	end
 end
 

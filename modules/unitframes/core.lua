@@ -33,6 +33,9 @@ function UF:UnitChanged()
 		if self.bars["buffs"] ~= nil then
 			self.bars["buffs"]:UnitChanged()
 		end
+		if self.bars["timers"] ~= nil then
+			self.bars["timers"]:UnitChanged()
+		end
 	else
 		self.frame:SetVisible(false)
 	end
@@ -170,6 +173,9 @@ function UF:Update()
 	end
 	if self.bars["buffs"] ~= nil then
 		self.bars["buffs"]:Update()
+	end
+	if self.bars["timers"] ~= nil then
+		self.bars["timers"]:Update()
 	end
 end
 
@@ -312,6 +318,8 @@ function Roflui.PlayerFrame()
 	
 	base.frame:SetSecureMode("restricted")
 	base.frame.Event.LeftClick = "target @player"
+	base.frame.Event.RightClick = function() Command.Unit.Menu("player") end
+	base.frame:SetMouseoverUnit("player")
 	
 	Roflui.uf["player"] = base
 end
@@ -329,7 +337,12 @@ function Roflui.TargetFrame()
 	
 	base.buffs = true
 	base.debuffs = true
-	base.mydebuffs = true
+	base.mydebuffs = false
+	base.mytimers = true
+	
+	base.timerbuffs = true
+	base.timerdebuffs = true
+	
 	base.maxbuffs = 8
 	
 	base.frame = Roflui.CreateFrame(base)
@@ -343,6 +356,9 @@ function Roflui.TargetFrame()
 		
 	base.bars["buffs"] = Roflui.CreateBuffBar(base)
 	base.bars["buffs"].frame:SetPoint("BOTTOMLEFT", base.frame, "TOPLEFT", 0, -5)
+	base.bars["timers"] = Roflui.CreateTimers(base)
+	base.bars["timers"].frame:SetPoint("BOTTOMLEFT", base.frame, "TOPLEFT", 0, -50)
+	base.frame.Event.RightClick = function() Command.Unit.Menu("player.target") end
 	
 	base.frame:SetVisible(false)
 	

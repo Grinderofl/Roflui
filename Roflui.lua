@@ -121,6 +121,9 @@ function Roflui.BuffsChanged(id, buffs)
 				if f.bars["buffs"] ~= nil then
 					f.bars["buffs"]:UpdateBuffs();
 				end
+				if f.bars["timers"] ~= nil then
+					--f.bars["timers"]:UpdateBuffs();
+				end
 			end
 		end
 	end
@@ -136,6 +139,11 @@ function Roflui.BuffRemoved(id, buffs)
 				if f.bars["buffs"] ~= nil then
 					for b in pairs(buffs) do
 						f.bars["buffs"]:RemoveBuff(b);
+					end
+				end
+				if f.bars["timers"] ~= nil then
+					for b in pairs(buffs) do
+						f.bars["timers"]:RemoveTimer(b);
 					end
 				end
 			end
@@ -156,6 +164,12 @@ function Roflui.BuffAdded(id, buffs)
 						f.bars["buffs"]:AddBuff(k, b);
 					end
 				end
+				if f.bars["timers"] ~= nil then
+					local details = Inspect.Buff.Detail(id, buffs)
+					for k,b in pairs(details) do
+						f.bars["timers"]:AddTimer(k, b);
+					end
+				end				
 			end
 		end
 	end
