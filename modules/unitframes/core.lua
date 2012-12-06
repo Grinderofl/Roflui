@@ -304,13 +304,20 @@ function Roflui.PlayerFrame()
 	base.debuffs = true
 	base.mydebuffs = false
 	base.maxbuffs = 8
+	
+	base.mytimers = true
+	base.timerbuffs = true
+	base.timerdebuffs = true
+	base.maxduration = 30
+	base.noduration = false
 
 	base.bars["health"], base.bars["healthbg"] = Roflui.CreateHealthBar(base)
 	base.bars["power"], base.bars["powerbg"] = Roflui.CreatePowerBar(base)
 	base.bars["cast"] = Roflui.CreateCastBar(base)
 	base.bars["buffs"] = Roflui.CreateBuffBar(base)
-	
 	base.bars["buffs"].frame:SetPoint("BOTTOMLEFT", base.frame, "TOPLEFT", 0, -5)
+	base.bars["timers"] = Roflui.CreateTimers(base)
+	base.bars["timers"].frame:SetPoint("BOTTOMLEFT", base.frame, "TOPLEFT", 0, -50)
 	
 	base.texts["health"] = Roflui.CreateHealthText(base)
 	base.texts["power"] = Roflui.CreatePowerText(base)
@@ -338,9 +345,9 @@ function Roflui.TargetFrame()
 	base.buffs = true
 	base.debuffs = true
 	base.mydebuffs = false
-	base.mytimers = true
 	
-	base.timerbuffs = true
+	base.mytimers = true
+	base.timerbuffs = false
 	base.timerdebuffs = true
 	
 	base.maxbuffs = 8

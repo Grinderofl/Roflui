@@ -16,6 +16,8 @@ function Roflui.CreateTimers(base)
 	timers.resync = false
 	timers.mineonly = base.mytimers
 	timers.unitId = nil
+	timers.maxduration = base.maxduration
+	timers.noduration = base.noduration
 	
 	local frame = UI.CreateFrame("Frame", "Timers", base.frame)
 	frame:SetWidth(base.width)
@@ -163,10 +165,20 @@ function Timers:CreateTimer()
 	
 	function timer:SetBuff(detail, base)
 		self.detail = detail
+		if detail == nil then return end
+		if not base.noduration then
+			if detail.duration == nil then return end
+		end
+		if base.maxduration then 
+			if detail.duration ~= nil and detail.duration > base.maxduration then return end
+		end
 		if detail.debuff then
 			if not base.debuffs then return end
-			if base.mineonly then 
-				caster = Inspect.Unit.Detail(detail.caster).name
+			if base.mineonly then
+				if detail.caster == nil then return end
+				ct = Inspect.Unit.Detail(detail.caster)
+				if ct == nil then return end
+				caster = ct.name
 				unit = Inspect.Unit.Detail("player").name
 				if caster ~= unit then return end
 			end
@@ -186,8 +198,13 @@ function Timers:CreateTimer()
 	function timer:Tick(id, unit)
 		buff = Inspect.Buff.Detail(unit, id)
 		if buff == nil then return end
-		self.text:SetText(buff.name)
-				
+		local text = buff.name
+		if buff.stack ~= nil and buff.stack > 1 then
+			text = text .." ("..buff.stack..")"
+		end
+		
+		self.text:SetText(text)
+		
 		if buff.duration == nil then
 			self.time:SetText("")
 			self.bar:SetWidth(0)
