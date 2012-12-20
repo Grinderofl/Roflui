@@ -126,17 +126,17 @@ function Timers:CreateTimer()
 	barbg1:SetPoint("TOPLEFT", timer, "TOPLEFT", timer:GetHeight()+2, 0)
 	barbg1:SetHeight(timer:GetHeight())
 	barbg1:SetWidth(timer:GetWidth()-timer:GetHeight()-2)
-	barbg1:SetBackgroundColor(0, 0, 0, .7)
+	barbg1:SetBackgroundColor(0, 0, 0, .3)
 	
 	barbg2 = UI.CreateFrame("Frame", "IconBg2", barbg1)
 	barbg2:SetPoint("TOPLEFT", barbg1, "TOPLEFT", 1, 1)
-	barbg2:SetBackgroundColor(.6, .6, .6, .7)
+	barbg2:SetBackgroundColor(.6, .6, .6, .2)
 	barbg2:SetWidth(barbg1:GetWidth()-2)
 	barbg2:SetHeight(barbg1:GetHeight()-2)
 	
 	barbg3 = UI.CreateFrame("Frame", "IconBg2", barbg2)
 	barbg3:SetPoint("TOPLEFT", barbg2, "TOPLEFT", 1, 1)
-	barbg3:SetBackgroundColor(.15, .15, .15, .4)
+	barbg3:SetBackgroundColor(.15, .15, .15, .2)
 	barbg3:SetWidth(barbg2:GetWidth()-2)
 	barbg3:SetHeight(barbg2:GetHeight()-2)
 	
@@ -164,6 +164,7 @@ function Timers:CreateTimer()
 	timer.time = timeText
 	
 	function timer:SetBuff(detail, base)
+		self:SetVisible(false)
 		self.detail = detail
 		if detail == nil then return end
 		if not base.noduration then
@@ -185,6 +186,14 @@ function Timers:CreateTimer()
 			--self:SetBackgroundColor(.8, .3, .3, 1)
 		else
 			if not base.buffs then return end
+			if base.mineonly then
+				if detail.caster == nil then return end
+				ct = Inspect.Unit.Detail(detail.caster)
+				if ct == nil then return end
+				caster = ct.name
+				unit = Inspect.Unit.Detail("player").name
+				if caster ~= unit then return end
+			end
 			--self:SetBackgroundColor(.6, .6, .6, 1)
 		end
 		--self.icon:SetHeight(self:GetHeight()-2)

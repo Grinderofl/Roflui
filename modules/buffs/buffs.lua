@@ -108,6 +108,7 @@ function Buff:CreateBuff()
 	buff.icon = icon
 	
 	function buff:SetBuff(detail, base)
+		self:SetVisible(false)
 		self.detail = detail
 		if detail.debuff then
 			if not base.debuffs then return end

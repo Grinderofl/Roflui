@@ -30,6 +30,7 @@ function UF:UnitChanged()
 		self:SetPowerColor()
 		self:UpdatePower()
 		self:UpdateCast()
+		self:UpdateCombat()
 		if self.bars["buffs"] ~= nil then
 			self.bars["buffs"]:UnitChanged()
 		end
@@ -38,6 +39,16 @@ function UF:UnitChanged()
 		end
 	else
 		self.frame:SetVisible(false)
+	end
+end
+
+function UF:UpdateCombat()
+	if self.bars["combat"] == nil then return end
+	unit = Inspect.Unit.Detail(self.unit)
+	if unit.combat then
+		self.bars["combat"]:SetVisible(true)
+	else
+		self.bars["combat"]:SetVisible(false)
 	end
 end
 
@@ -318,6 +329,7 @@ function Roflui.PlayerFrame()
 	base.bars["buffs"].frame:SetPoint("BOTTOMLEFT", base.frame, "TOPLEFT", 0, -5)
 	base.bars["timers"] = Roflui.CreateTimers(base)
 	base.bars["timers"].frame:SetPoint("BOTTOMLEFT", base.frame, "TOPLEFT", 0, -50)
+	base.bars["combat"] = Roflui.CreateCombatBar(base)
 	
 	base.texts["health"] = Roflui.CreateHealthText(base)
 	base.texts["power"] = Roflui.CreatePowerText(base)
@@ -347,7 +359,7 @@ function Roflui.TargetFrame()
 	base.mydebuffs = false
 	
 	base.mytimers = true
-	base.timerbuffs = false
+	base.timerbuffs = true
 	base.timerdebuffs = true
 	
 	base.maxbuffs = 8
@@ -391,6 +403,17 @@ function Roflui.TargetOfTargetFrame()
 	base.frame:SetVisible(false)
 	
 	Roflui.uf["player.target.target"] = base
+end
+
+function Roflui.CreateCombatBar(base)
+	local frame = UI.CreateFrame("Frame", base.unit, base.frame)
+	frame:SetPoint("TOPLEFT", base.frame, "TOPLEFT", -1, -1)
+	frame:SetBackgroundColor(.9, 0, 0, .3)
+	frame:SetWidth(base.width + 2)
+	frame:SetHeight(base.height + 2)
+	frame:SetVisible(false)
+	
+	return frame
 end
 
 function Roflui.CreateHealthBar(base, full)

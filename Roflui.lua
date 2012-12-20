@@ -59,6 +59,19 @@ function Roflui.Available(units)
 	--]]
 end
 
+function Roflui.UpdateCombat(units)
+	for n, f in pairs(Roflui.uf) do
+		fuid = Inspect.Unit.Lookup(n)
+		if fuid then
+			for u,v in pairs(units) do
+				if u == fuid then
+					f:UpdateCombat()
+				end
+			end
+		end
+	end
+end
+
 function Roflui.UpdateHealth(units)
 	for n, f in pairs(Roflui.uf) do
 		fuid = Inspect.Unit.Lookup(n)
@@ -198,6 +211,9 @@ function Roflui.SetupEvents()
 	-- Calling specifics
 	table.insert(Event.Unit.Detail.Combo, { Roflui.UpdateCallingBar, "Roflui", "Update combo"})
 	table.insert(Event.Unit.Detail.Charge, { Roflui.UpdateCallingBar, "Roflui", "Update combo"})
+	
+	-- Other stuff
+	table.insert(Event.Unit.Detail.Combat, {Roflui.UpdateCombat, "Roflui", "Update combat"})
 	
 	--[[
 	--TODO:
