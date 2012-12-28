@@ -299,8 +299,19 @@ function UF:SetPowerColor()
 	--]]
 end
 
+function UF:UpdateOptional(tar, show)
+	
+	optional = Roflui.uf[tar].bars["optional"]
+	if optional == nil then return end
+	
+	unit = Inspect.Unit.Detail(tar)
+	
+	optional:SetVisible(show)
+	optional.vitality:SetText(unit.vitality .. "%")
+	optional.planar:SetText(unit.planar .. " / " .. unit.planarMax)
+end
+
 function Roflui.PlayerFrame()
-	dp("Creating player")
 	base = Roflui.CreateFrameBase("player")
 	base.width = config.player.width
 	base.height = config.player.height
@@ -330,6 +341,7 @@ function Roflui.PlayerFrame()
 	base.bars["timers"] = Roflui.CreateTimers(base)
 	base.bars["timers"].frame:SetPoint("BOTTOMLEFT", base.frame, "TOPLEFT", 0, -50)
 	base.bars["combat"] = Roflui.CreateCombatBar(base)
+	base.bars["optional"] = Roflui.CreateOptionalBar(base)
 	
 	base.texts["health"] = Roflui.CreateHealthText(base)
 	base.texts["power"] = Roflui.CreatePowerText(base)
@@ -338,13 +350,15 @@ function Roflui.PlayerFrame()
 	base.frame:SetSecureMode("restricted")
 	base.frame.Event.LeftClick = "target @player"
 	base.frame.Event.RightClick = function() Command.Unit.Menu("player") end
+	base.frame.Event.MouseIn = function() base:UpdateOptional("player", true) end
+	base.frame.Event.MouseOut = function() base:UpdateOptional("player", false) end
 	base.frame:SetMouseoverUnit("player")
 	
 	Roflui.uf["player"] = base
 end
 
 function Roflui.TargetFrame()
-	dp("Creating target")
+
 	base = Roflui.CreateFrameBase("player.target")
 	base.width = config.target.width
 	base.height = config.target.height
@@ -385,7 +399,7 @@ function Roflui.TargetFrame()
 end
 
 function Roflui.TargetOfTargetFrame()
-	dp("Creating tot")
+
 	base = Roflui.CreateFrameBase("player.target.target")
 	base.width = config.targettarget.width
 	base.height = config.targettarget.height
@@ -407,13 +421,45 @@ end
 
 function Roflui.CreateCombatBar(base)
 	local frame = UI.CreateFrame("Frame", base.unit, base.frame)
-	frame:SetPoint("TOPLEFT", base.frame, "TOPLEFT", -1, -1)
-	frame:SetBackgroundColor(.9, 0, 0, .3)
-	frame:SetWidth(base.width + 2)
-	frame:SetHeight(base.height + 2)
+	frame:SetPoint("TOPLEFT", base.frame, "TOPLEFT", -2, -2)
+	frame:SetBackgroundColor(.9, 0, 0, .5)
+	frame:SetWidth(base.width + 4)
+	frame:SetHeight(base.height + 4)
 	frame:SetVisible(false)
 	
 	return frame
+end
+
+function Roflui.CreateOptionalBar(base)
+	local fbg = UI.CreateFrame("Frame", base.unit, base.frame)
+	fbg:SetPoint("TOPLEFT", base.frame, "TOPLEFT", -8, -8)
+	fbg:SetWidth(base.width + 16)
+	fbg:SetHeight(base.height + 16)
+	fbg:SetVisible(false)
+	fbg:SetLayer(1000)
+	
+	local vit= Text.Create(fbg)
+	vit:SetPoint("TOPLEFT", fbg, "TOPLEFT", 0, 0)
+	vit:SetFontSize(base.fontSize)
+	vit:SetShadowColor(0, 0, 0, 1)
+	vit:SetFontColor(.8, .8, 8, 1)
+	vit:SetLayer(30)
+	vit:SetText("100%")
+
+	local planar = Text.Create(fbg)
+	planar:SetPoint("BOTTOMLEFT", fbg, "BOTTOMLEFT", 0, 0)
+	planar:SetFontSize(base.fontSize)
+	planar:SetShadowColor(0, 0, 0, 1)
+	planar:SetFontColor(.4, .4, 8, 1)
+	planar:SetLayer(30)
+	planar:SetText("9/9")
+
+	fbg.vitality = vit
+	fbg.planar = planar
+	
+	base.bars["optional"] = fbg
+	
+	return fbg
 end
 
 function Roflui.CreateHealthBar(base, full)
