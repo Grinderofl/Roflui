@@ -102,7 +102,7 @@ function Timers:CreateTimer()
 	timer = UI.CreateFrame("Frame", "MyBuff", self.frame)
 	timer:SetHeight(20)
 	timer:SetWidth(self.frame:GetWidth())
-	--timer:SetBackgroundColor(1, .15, .15, .5)
+	timer:SetBackgroundColor(0, 0, 0, 0)
 	
 	iconbg1 = UI.CreateFrame("Frame", "IconBg1", timer)
 	iconbg1:SetPoint("TOPLEFT", timer, "TOPLEFT", 0, 0)
@@ -126,19 +126,31 @@ function Timers:CreateTimer()
 	barbg1:SetPoint("TOPLEFT", timer, "TOPLEFT", timer:GetHeight()+2, 0)
 	barbg1:SetHeight(timer:GetHeight())
 	barbg1:SetWidth(timer:GetWidth()-timer:GetHeight()-2)
+<<<<<<< HEAD
 	barbg1:SetBackgroundColor(0, 0, 0, .3)
 	
 	barbg2 = UI.CreateFrame("Frame", "IconBg2", barbg1)
 	barbg2:SetPoint("TOPLEFT", barbg1, "TOPLEFT", 1, 1)
 	barbg2:SetBackgroundColor(.6, .6, .6, .2)
+=======
+	--barbg1:SetBackgroundColor(0, 0, 0, 0)
+	
+	barbg2 = UI.CreateFrame("Frame", "IconBg2", barbg1)
+	barbg2:SetPoint("TOPLEFT", barbg1, "TOPLEFT", 1, 1)
+	barbg2:SetBackgroundColor(.6, .6, .6, 0)
+>>>>>>> Fixed a few issues with errors.
 	barbg2:SetWidth(barbg1:GetWidth()-2)
-	barbg2:SetHeight(barbg1:GetHeight()-2)
+	--barbg2:SetHeight(barbg1:GetHeight()-2)
 	
 	barbg3 = UI.CreateFrame("Frame", "IconBg2", barbg2)
 	barbg3:SetPoint("TOPLEFT", barbg2, "TOPLEFT", 1, 1)
+<<<<<<< HEAD
 	barbg3:SetBackgroundColor(.15, .15, .15, .2)
+=======
+	barbg3:SetBackgroundColor(.15, .15, .15, 0)
+>>>>>>> Fixed a few issues with errors.
 	barbg3:SetWidth(barbg2:GetWidth()-2)
-	barbg3:SetHeight(barbg2:GetHeight()-2)
+	--barbg3:SetHeight(barbg2:GetHeight()-2)
 	
 	bar = UI.CreateFrame("Frame", "Bar", barbg3)
 	bar:SetPoint("TOPLEFT", barbg3, "TOPLEFT", 0, 0)
@@ -167,12 +179,20 @@ function Timers:CreateTimer()
 		self:SetVisible(false)
 		self.detail = detail
 		if detail == nil then return end
-		if not base.noduration then
-			if detail.duration == nil then return end
+		
+		if base ~= nil then
+			if base.noduration ~= nil then
+				if not base.noduration then
+					if detail.duration == nil then return end
+				end
+			end
+			if base.maxduration ~= nil then
+				if base.maxduration then 
+					if detail.duration ~= nil and detail.duration > base.maxduration then return end
+				end
+			end
 		end
-		if base.maxduration then 
-			if detail.duration ~= nil and detail.duration > base.maxduration then return end
-		end
+		
 		if detail.debuff then
 			if not base.debuffs then return end
 			if base.mineonly then
